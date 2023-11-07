@@ -7,6 +7,11 @@ android {
     namespace = "ca.unb.mobiledev.weatherapp"
     compileSdk = 33
 
+    //Binding
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "ca.unb.mobiledev.weatherapp"
         minSdk = 24
@@ -47,5 +52,13 @@ dependencies {
     //Lottie Animation 6.1.0
 
     implementation ("com.airbnb.android:lottie:6.1.0")
+    //implementation ("com.squareup.retrofit2:converter-gson:latest.version")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    //Location
+    implementation ("com.google.android.gms:play-services-location:17.0.0")
+
+    //real time loc acces dependenct
+    implementation ("com.google.android.gms:play-services-location:<latest_version>'")
 
 }
