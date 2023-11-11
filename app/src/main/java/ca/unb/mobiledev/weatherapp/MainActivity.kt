@@ -27,10 +27,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentValues
 import android.location.LocationRequest
+import android.provider.CalendarContract
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import java.util.TimeZone
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,21 +43,25 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    companion object {
-        private const val REQUEST_LOCATION_PERMISSION = 1 // or any other integer
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setContentView(binding.root)
+        //Log.d("", "No valid calendar ID found") //temp is temperature
         // Ensure you have the right permissions before fetching the weather data
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Permissions are granted, you can fetch the last known location
-            getLastKnownLocation()
+            Log.d("TAG", "PERMISIION DONE ON_CREATE 1")
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_CALENDAR), REQUEST_CALENDAR_WRITE_PERMISSION)
+
         } else {
             // Permissions are not granted, request them
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         }
+
+        getLastKnownLocation()
+        //onRequestPermissionsResult()
         searchCity()
     }
     //This will serve realtime location
@@ -104,6 +113,139 @@ class MainActivity : AppCompatActivity() {
 //            Looper.getMainLooper()
 //        )
 //    }
+    //Calendar Request
+override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    when (requestCode) {
+        REQUEST_LOCATION_PERMISSION -> {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Handle the case where location permission is granted
+                Log.d("MainActivity", "Calendar write permission granted")
+                getLastKnownLocation()
+            } else {
+                // Handle the case where location permission is denied
+            }
+        }
+        REQUEST_CALENDAR_READ_PERMISSION -> {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Handle the case where calendar read permission is granted
+            } else {
+                // Handle the case where calendar read permission is denied
+            }
+        }
+        // Add other cases for different request codes if needed
+    }
+}
+
+
+    //Calendar
+    fun addWeatherToCalendar(context: Context, weatherInfo: String, date: Long) {
+        val values = ContentValues().apply {
+            put(CalendarContract.Events.DTSTART, date)
+            put(CalendarContract.Events.DTEND, date + 60 * 60 * 1000) // For 1 hour duration
+            put(CalendarContract.Events.TITLE, "Weather Forecast")
+            put(CalendarContract.Events.DESCRIPTION, weatherInfo)
+            put(CalendarContract.Events.CALENDAR_ID, getPrimaryCalendarId(context))
+            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+        }
+
+        // Check for calendar write permissions
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            val insertUri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+            Log.d("TAG", "PERMISSION GRANTED")
+            if (insertUri != null) {
+                //context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+                Log.d("TAG", "Event added to calendar, Uri: $insertUri")
+            } else {
+                Log.e("TAG", "Failed to add event to calendar")
+            }
+
+        } else {
+            // Request permission from the user
+            Log.d("TAG", "NOT GRANTED")
+        }
+    }
+
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1 // Existing constant
+        private const val REQUEST_CALENDAR_READ_PERMISSION = 2 // Add this constant to the existing companion object
+        private const val REQUEST_CALENDAR_WRITE_PERMISSION = 3 // Add this constant
+    }
+
+
+    @SuppressLint("Range")
+    fun getPrimaryCalendarId(context: Context): Long {
+        val projection = arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.IS_PRIMARY)
+        var calendarId: Long = -1
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            val cursor = context.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null
+            )
+
+            if (cursor?.moveToFirst() == true) {
+                do {
+                    val isPrimary = cursor.getInt(cursor.getColumnIndex(CalendarContract.Calendars.IS_PRIMARY)) == 1
+                    if (isPrimary) {
+                        calendarId = cursor.getLong(cursor.getColumnIndex(CalendarContract.Calendars._ID))
+                        Log.d("TAG", "Primary Calendar ID: $calendarId")
+                        break // Break if primary calendar is found
+                    }
+
+                    // If no primary calendar, use the first calendar found
+                    if (calendarId == -1L) {
+                        calendarId = cursor.getLong(cursor.getColumnIndex(CalendarContract.Calendars._ID))
+                    }
+                } while (cursor.moveToNext())
+            }
+
+            cursor?.close()
+        } else {
+            // Request permission from the user
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.READ_CALENDAR), REQUEST_CALENDAR_READ_PERMISSION)
+        }
+
+        if (calendarId == -1L) {
+            Log.d("TAG", "No valid calendar ID found") // Log an error if no valid calendar ID is found
+        }
+        Log.d("TAG", "ID Returned")
+        return calendarId
+    }
+
+
+//    fun addWeatherToCalendar(context: Context, weatherInfo: String, date: Long) {
+//        val calendarId = getPrimaryCalendarId(context)
+//        Log.d("MainActivity", "Calendar ID: $calendarId") // Debug log
+//
+//        if (calendarId == -1L) {
+//            Log.e("MainActivity", "No valid calendar ID found")
+//            return
+//        }
+//
+//        val values = ContentValues().apply {
+//            put(CalendarContract.Events.DTSTART, date)
+//            put(CalendarContract.Events.DTEND, date + 60 * 60 * 1000) // For 1 hour duration
+//            put(CalendarContract.Events.TITLE, "Weather Forecast")
+//            put(CalendarContract.Events.DESCRIPTION, weatherInfo)
+//            put(CalendarContract.Events.CALENDAR_ID, calendarId)
+//            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+//        }
+//
+//        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+//            val uri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+//            Log.d("MainActivity", "Event URI: $uri") // Debug log
+//        } else {
+//            Log.e("MainActivity", "Write calendar permission not granted")
+//            // Request permission from the user
+//        }
+//    }
+
+
+
 
     // Request location updates
     private fun fetchLastKnownLocation() {
@@ -137,6 +279,7 @@ class MainActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val cityName = getCityName(it.latitude, it.longitude)
                         cityName?.let { name ->
+                            Log.d("TAG", "MOVING TO FETCH WEATHER DATA")
                             fetchWeatherData(name)
                         }
                     }
@@ -221,6 +364,19 @@ class MainActivity : AppCompatActivity() {
                     binding.day.text = dayName(System.currentTimeMillis())
                     binding.date.text = date(System.currentTimeMillis())
                      binding.cityName.text = "$city"
+
+
+
+
+                    // Adding weather information to the calendar
+                    val weatherInfo = "Temperature: ${responseBody.main.temp}°C, Condition: ${responseBody.weather.firstOrNull()?.main ?: "unknown"}"
+
+                    // Using the current system time for the calendar event date
+                    val eventDate = System.currentTimeMillis()
+
+                    // Adding weather information to the calendar
+                    Log.d("MainActivity", "ADD TO CALENDAR CALLED")
+                    addWeatherToCalendar(this@MainActivity, weatherInfo, eventDate)
 
                     changeAppAccordingToWeatherCondition(condition)
                 }
