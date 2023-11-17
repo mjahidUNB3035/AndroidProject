@@ -11,4 +11,15 @@ interface ApiInterface {
         @Query("appid") appid: String,
         @Query("units") units: String
     ): Call<WeatherApp>
+
+    //5 Day Forecast
+    @GET("forecast")
+    fun getFiveDayWeatherData(
+        @Query("q") city: String,
+        @Query("appid") appid: String,
+        @Query("units") units: String
+    ): Call<NewWeatherApp> // Replace ForecastData with your actual data model class
+
+    //fun getFiveDayWeatherData(city: String, s: String, s1: String): Any
+    //fun getFiveDayWeatherData(city: String, s: String, s1: String): Any
 }

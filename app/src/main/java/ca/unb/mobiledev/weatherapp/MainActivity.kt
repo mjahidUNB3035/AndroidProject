@@ -36,9 +36,14 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import java.util.TimeZone
+//import java.text.SimpleDateFormat
+//import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
+
+    private var latitude: Double? = null
+    private var longitude: Double? = null
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -152,7 +157,7 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
         // Check for calendar write permissions
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             val insertUri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
-            Log.d("TAG", "PERMISSION GRANTED")
+            Log.d("TAG","CalendarLog\", \"Event added to calendar, Uri: $insertUri, Info: $weatherInfo")
             if (insertUri != null) {
                 //context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
                 Log.d("TAG", "Event added to calendar, Uri: $insertUri")
@@ -281,6 +286,13 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
                         cityName?.let { name ->
                             Log.d("TAG", "MOVING TO FETCH WEATHER DATA")
                             fetchWeatherData(name)
+                            fetchFiveDayForecast(name)
+                            //FOR 7 DAYS
+
+
+//                            latitude = it.latitude
+//                            longitude = it.longitude
+//                            Log.d("TAG", "Latitude: $latitude, Longitude: $longitude")
                         }
                     }
                 }
@@ -292,6 +304,51 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         }
     }
+
+    //Fetch7DAY
+    private fun fetchFiveDayForecast(city: String) {
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
+            .build().create(ApiInterface::class.java)
+
+        val response = retrofit.getFiveDayWeatherData(city, "a172f58aec61e7a63e67507b5c61c057", "metric")
+        response.enqueue(object : Callback<NewWeatherApp> {
+            override fun onResponse(call: Call<NewWeatherApp>, response: Response<NewWeatherApp>) {
+                val forecast = response.body()
+                forecast?.let {
+                    addForecastToCalendar(it)
+                }
+            }
+
+            override fun onFailure(call: Call<NewWeatherApp>, t: Throwable) {
+                // Handle failure
+            }
+        })
+    }
+
+    private fun addForecastToCalendar(forecast: NewWeatherApp) {
+        forecast.list.forEach { forecastItem ->
+            val timestamp = convertDateToTimestamp(forecastItem.dt_txt)
+            val weatherInfo = "Forecast: ${forecastItem.weather[0].main}, Temp: ${forecastItem.main.temp}°C"
+            addWeatherToCalendar(this, weatherInfo, timestamp)
+        }
+    }
+
+
+    private fun convertDateToTimestamp(dateStr: String): Long {
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return try {
+            val date = format.parse(dateStr)
+            date?.time ?: 0
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error in parsing date", e)
+            0
+        }
+    }
+
+
+
 
     private suspend fun getCityName(latitude: Double, longitude: Double): String? {
         return withContext(Dispatchers.IO) {
