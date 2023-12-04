@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sunny_background"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:ignore="MissingClass">
 
 
     <SearchView
@@ -34,14 +35,17 @@
         app:layout_constraintEnd_toEndOf="@+id/searchView"
         app:layout_constraintHorizontal_bias="0.479"
         app:layout_constraintStart_toStartOf="@+id/searchView"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="TextView"
+        android:text="Todays Weather"
+        android:textColor="@android:color/black"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lottieAnimationView"
@@ -57,6 +61,7 @@
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/textView2"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <com.airbnb.lottie.LottieAnimationView
@@ -80,6 +85,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/lottieAnimationView"
         app:layout_constraintStart_toStartOf="@+id/lottieAnimationView"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
     <TextView
@@ -90,6 +96,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/weather" />
 
     <TextView
@@ -102,6 +109,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/max_temp"
         app:layout_constraintStart_toStartOf="@+id/max_temp"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/max_temp" />
 
     <TextView
@@ -113,6 +121,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/min_temp"
         app:layout_constraintStart_toStartOf="@+id/min_temp"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/min_temp" />
 
     <TextView
@@ -123,6 +132,7 @@
         android:text="27 oct 2023"
         app:layout_constraintEnd_toEndOf="@+id/day"
         app:layout_constraintStart_toStartOf="@+id/day"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/day" />
 
     <FrameLayout
@@ -134,7 +144,7 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.862"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date">
 
@@ -177,6 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
+                    android:textColor="@android:color/black"
                     android:text="0.00 %" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -185,6 +196,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Humidity"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -212,6 +224,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
+                    android:textColor="@android:color/black"
                     android:text="0.00" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -220,6 +233,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Sunset"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -247,6 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
+                    android:textColor="@android:color/black"
                     android:text="0.00" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -255,6 +270,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Sunrise"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -282,6 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
+                    android:textColor="@android:color/black"
                     android:text="0.00 m/s" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -290,6 +307,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Wind Speed"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -318,6 +336,7 @@
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
                     android:textAllCaps="true"
+                    android:textColor="@android:color/black"
                     android:text="Sunny" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -326,6 +345,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Condition"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -353,6 +373,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:gravity="center_horizontal"
+                    android:textColor="@android:color/black"
                     android:text="0000 hPa" />
                 <!-- android:id="@+id/textView9"-->
                 <TextView
@@ -361,6 +382,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="Sea Level"
+                    android:textColor="@android:color/black"
                     android:textSize="10sp" />
 
             </LinearLayout>
@@ -368,6 +390,42 @@
 
     </FrameLayout>
 
+    <!-- ... other layout elements ... -->
+
+    <!-- Five Day Weather RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+    android:scrollbars="horizontal"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/textView9"
+
+        android:textStyle="bold"
+        android:background="@android:drawable/alert_dark_frame"
+        android:textColor="@android:color/black"
+        android:shadowColor="#FFFFFF"
+
+    android:layout_marginBottom="0dp" />
+
+    <!-- "Developed By HRJ" TextView -->
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="Developed By HRJ"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/black" />
+
+
+    <!-- ... other layout elements ... -->
+
+    <!--
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
@@ -377,7 +435,91 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+    -->
+    <!-- LINE CHART"-->
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
+        <Button
+            android:id="@+id/btnShowMinMaxTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show Min/Max Temperature"
+            android:layout_centerInParent="true" />
+
+    <!-- LINE CHART New Window"-->
+
+    <!--
+    <Button
+        android:id="@+id/btnGraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Graph" />
+
+
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="270dp"
+        android:text="Set Calendar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather" />
+-->
+    <Button
+        android:id="@+id/btnGraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Graph"
+        app:layout_constraintTop_toBottomOf="@id/btn2"
+        app:layout_constraintStart_toStartOf="@id/btn2"
+        app:layout_constraintEnd_toEndOf="@id/btn2" />
+
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="270dp"
+        android:text="Set Calendar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather" />
+    <!--
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:scrollbars="horizontal" />
+
+        -->
+    <!-- NEW LINE
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+    android:scrollbars="horizontal"
+    android:layout_marginBottom="16dp" />
+
+    -->
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GraphActivity">
+
+    <!-- LineChart view -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/checkboxContainer"
+        android:background="#D3D3D3" />
+
+    <!-- Checkbox container -->
+    <LinearLayout
+        android:id="@+id/checkboxContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+
+        <!-- Add your checkboxes here -->
+        <CheckBox
+            android:id="@+id/checkboxTemperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperature"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/checkboxHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Humidity"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/checkboxWindSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wind Speed"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/checkboxFeelsLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feels Like"
+            android:checked="true" />
+
+        <!-- Add more checkboxes as needed -->
+
+    </LinearLayout>
+</RelativeLayout>

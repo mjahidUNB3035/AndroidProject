@@ -11,6 +11,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    buildFeatures {
+        dataBinding = true
+    }
 
     defaultConfig {
         applicationId = "ca.unb.mobiledev.weatherapp"
@@ -50,15 +53,27 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //Lottie Animation 6.1.0
+    //implementation ("com.airbnb.android:lottie:latest_version")
+    implementation ("com.airbnb.android:lottie:3.7.0")
 
-    implementation ("com.airbnb.android:lottie:6.1.0")
+    //implementation ("com.airbnb.android:lottie:6.1.0")
     //implementation ("com.squareup.retrofit2:converter-gson:latest.version")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     //Location
-    implementation ("com.google.android.gms:play-services-location:17.0.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
 
     //real time loc acces dependenct
     implementation ("com.google.android.gms:play-services-location:<latest_version>'")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    //MAX MIN TEMP
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    //line chart
+    //implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+
+
+    //implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 }

@@ -1,5 +1,7 @@
 package ca.unb.mobiledev.weatherapp
 
+import java.io.Serializable
+
 data class WeatherApp(
     val base: String,
     val clouds: Clouds,
@@ -14,4 +16,4 @@ data class WeatherApp(
     val visibility: Int,
     val weather: List<Weather>,
     val wind: Wind
-)
+): Serializable
