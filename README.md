@@ -1,6 +1,6 @@
-# WeatherPlan
+# WeatherPlan 🌥️
 
-## Introduction
+## Introduction 
 WeatherPlan is an innovative Android application developed using Kotlin and Android Studio, designed to provide real-time weather updates and forecasts. This app stands out with its user-friendly interface, detailed weather data display, and unique features like calendar integration and graphical weather forecasts. Whether you're planning your day or checking weather conditions in different cities, WeatherPlan is your go-to source for accurate and up-to-date weather information.
 
 ## Permission
