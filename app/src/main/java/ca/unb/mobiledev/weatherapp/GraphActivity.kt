@@ -75,6 +75,7 @@ class GraphActivity  : AppCompatActivity() {
         val feelsLikeEntries = ArrayList<Entry>()
 
 
+
         if (forecastList != null) {
             forecastList.forEachIndexed { index, forecastItem ->
                 //temperatureEntries.add(Entry(index.toFloat(), forecastItem.main.temp.toFloat()))
@@ -95,6 +96,10 @@ class GraphActivity  : AppCompatActivity() {
             SimpleDateFormat("dd MMM", Locale.getDefault()).format(forecastItem.dt)
         }
 
+        temperatureDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        humidityDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        windSpeedDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        feelsLikeDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 //        val temperatureEntries = ArrayList<Entry>()
 //        if (forecastList != null) {
 //            forecastList.forEachIndexed { index, forecastItem ->
@@ -106,10 +111,12 @@ class GraphActivity  : AppCompatActivity() {
         temperatureDataSet.color = Color.RED
         temperatureDataSet.setCircleColor(Color.RED)
         temperatureDataSet.circleRadius = 5f
+        temperatureDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
         humidityDataSet.color = Color.BLUE
         humidityDataSet.setCircleColor(Color.BLUE)
         humidityDataSet.circleRadius = 5f
+        humidityDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
         windSpeedDataSet.color = Color.GREEN
         windSpeedDataSet.setCircleColor(Color.GREEN)
@@ -118,6 +125,7 @@ class GraphActivity  : AppCompatActivity() {
         feelsLikeDataSet.color = Color.MAGENTA // Customize the color for "Feels Like"
         feelsLikeDataSet.setCircleColor(Color.MAGENTA)
         feelsLikeDataSet.circleRadius = 5f
+        feelsLikeDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
         // Create a LineData object with all data sets
         val lineData = LineData(temperatureDataSet, humidityDataSet, windSpeedDataSet, feelsLikeDataSet)
@@ -145,7 +153,7 @@ class GraphActivity  : AppCompatActivity() {
 // Set listeners for checkboxes to show/hide corresponding line graphs
         //DATE CHANGE __________________________________________>>
         val xAxisFormatter = dateList?.let { DateValueFormatter(it) }
-        lineChart.xAxis.valueFormatter = xAxisFormatter
+       // lineChart.xAxis.valueFormatter = xAxisFormatter
 
         setCheckBoxListeners()
 
@@ -301,7 +309,6 @@ class GraphActivity  : AppCompatActivity() {
     fun onResponse(call: Call<NewWeatherApp>, response: Response<NewWeatherApp>) {
         val responseBody = response.body()
         responseBody?.let {
-            // Assuming 'list' is the list of forecast items in your NewWeatherApp class
             setupLineChart(it.list)
         }
     }

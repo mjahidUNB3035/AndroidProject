@@ -8,7 +8,6 @@ class DateValueFormatter(private val dates: List<String>) : ValueFormatter() {
     private val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
 
     override fun getFormattedValue(value: Float): String {
-        // Assuming 'value' is an index, convert it to a date string
         return dates.getOrNull(value.toInt()) ?: ""
     }
 }

@@ -37,6 +37,7 @@ import android.provider.CalendarContract
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -158,7 +159,6 @@ class MainActivity : AppCompatActivity() {
 
     //BOTTOM LINE
     private fun initializeRecyclerView() {
-        // Assuming you have a RecyclerView in your layout with the ID recyclerView
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         forecastAdapter = MinMaxTempAdapter(emptyList())
@@ -171,7 +171,6 @@ class MainActivity : AppCompatActivity() {
         btnGraph.visibility = View.GONE
         btnGraph.setOnClickListener {
             val intent = Intent(this, GraphActivity::class.java)
-            // Assuming forecastList is your list of ForecastData
             forecastList?.let {
                 intent.putExtra("forecastListKey", ArrayList(it)) // Ensure it's serializable
             }
@@ -183,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         btnShowMinMaxTemp.setOnClickListener {
             val intent = Intent(this, MinMaxTempActivity::class.java)
             forecastList?.let {
-                intent.putExtra("forecastListKey", ArrayList(it)) // Assuming forecastList is your data list
+                intent.putExtra("forecastListKey", ArrayList(it))
             }
             startActivity(intent)
         }
@@ -196,18 +195,11 @@ class MainActivity : AppCompatActivity() {
             initiateNetworkRequest()
         }
     }
-
-    // ... rest of your MainActivity code
-
-
-
-
     //line graph
     //ForecastData
     private fun setupLineChart(forecastList: List<ForecastData>) {
         val entries = ArrayList<Entry>()
         forecastList.forEachIndexed { index, forecastItem ->
-            // Use the correct temperature field from your actual forecast item class
             entries.add(Entry(index.toFloat(), forecastItem.main.temp.toFloat()))
         }
         if (entries.isNotEmpty()) {
@@ -216,7 +208,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Data set is empty")
         }
         val dataSet = LineDataSet(entries, "Temperature")
-        // Further dataSet configuration...
+        // Further dataSet configuration
         dataSet.lineWidth = 2.5f
         dataSet.color = Color.BLUE
         dataSet.setCircleColor(Color.RED)
@@ -231,10 +223,8 @@ class MainActivity : AppCompatActivity() {
      fun onResponse(call: Call<NewWeatherApp>, response: Response<NewWeatherApp>) {
         val responseBody = response.body()
         responseBody?.let {
-            // Assuming 'list' is the list of forecast items in your NewWeatherApp class
             setupLineChart(it.list)
         }
-        // ... rest of your onResponse code ...
     }
 
 
@@ -270,9 +260,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-// Assuming you have a list of WeatherData objects
-
     //Calendar Request
 override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -293,7 +280,6 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
                 // Handle the case where calendar read permission is denied
             }
         }
-        // Add other cases for different request codes if needed
     }
 }
 
@@ -341,8 +327,8 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 1 // Existing constant
-        private const val REQUEST_CALENDAR_READ_PERMISSION = 2 // Add this constant to the existing companion object
-        private const val REQUEST_CALENDAR_WRITE_PERMISSION = 3 // Add this constant
+        private const val REQUEST_CALENDAR_READ_PERMISSION = 2
+        private const val REQUEST_CALENDAR_WRITE_PERMISSION = 3
     }
 
 
@@ -391,11 +377,13 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
 
     //BOTTOM LINE
     private fun processForecastList(forecastList: List<ForecastData>): List<MinMaxTempData> {
+        // Get the current date
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         // Group the forecast data by date
         val groupedByDate = forecastList.groupBy {
             // Convert the timestamp to a formatted date string
             SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(it.dt.toLong() * 1000))
-        }
+        }.filterKeys { it != currentDate }
 
         // Create a list to hold the processed data
         val minMaxTempList = mutableListOf<MinMaxTempData>()
@@ -409,8 +397,12 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
             val minTemp = dailyTemps.minOrNull() ?: 0.0
             val averageHumidity = if (dailyHumidities.isNotEmpty()) dailyHumidities.average().toInt() else 0
 
+            // Convert maxTemp and minTemp to integers
+            val maxTempInt = maxTemp.toInt()
+            val minTempInt = minTemp.toInt()
+
             // Add the processed data to the list
-            minMaxTempList.add(MinMaxTempData(date, maxTemp.toFloat(), minTemp.toFloat(), averageHumidity))
+            minMaxTempList.add(MinMaxTempData(date, maxTempInt, minTempInt, averageHumidity))
         }
 
         return minMaxTempList
@@ -495,9 +487,15 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
                     val maxTemp = firstDayForecasts?.maxOfOrNull { it.main.temp_max } ?: 0.0
                     val minTemp = firstDayForecasts?.minOfOrNull { it.main.temp_min } ?: 0.0
 
+                    val maxTempInt = maxTemp.toInt()
+                    val minTempInt = minTemp.toInt()
+
                     // Update UI
-                    binding.maxTemp.text = "Max Temp: ${"%.2f".format(maxTemp)}°C"
-                    binding.minTemp.text = "Min Temp: ${"%.2f".format(minTemp)}°C"
+                  //  binding.maxTemp.text = "Max Temp: $maxTempInt°C"
+                  //  binding.minTemp.text = "Min Temp: $minTempInt°C"
+
+//                    binding.maxTemp.text = "Max Temp: $maxTemp°C"
+//                    binding.minTemp.text = "Min Temp: $minTemp°C"
 
                     updateRecyclerView(it.list)
 
@@ -537,9 +535,17 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
 private fun addForecastToCalendar(forecastList: List<ForecastData>?) {
     forecastList?.forEach { forecastItem ->
         val timestamp = convertDateToTimestamp(forecastItem.dt_txt)
-        val weatherInfo = "Forecast: ${forecastItem.weather[0].main}, Temp: ${forecastItem.main.temp}°C"
+       // val weatherInfo = "Forecast: ${forecastItem.weather[0].main}, Temp: ${forecastItem.main.temp}°C"
         Log.d("MainActivity", "Button clicked, addForcastIDToCalendar")
-        addWeatherToCalendar(this, weatherInfo, timestamp )
+        //New Data
+        val weatherInfo = StringBuilder()
+        weatherInfo.append("Temperature: ${forecastItem.main.temp}°C, \n")
+        weatherInfo.append("Condition: ${forecastItem.weather[0].main}, \n")
+        weatherInfo.append("Humidity: ${forecastItem.main.humidity}%, \n")
+        weatherInfo.append("Wind Speed: ${forecastItem.wind.speed} m/s, \n")
+       // weatherInfo.append("Sunrise: ${convertUnixTimeToTimeString(forecastItem)}, ")
+       // weatherInfo.append("Sunset: ${convertUnixTimeToTimeString(forecastItem.sys.sunset)}")
+        addWeatherToCalendar(this, weatherInfo.toString(), timestamp )
     }
 }
 
@@ -621,6 +627,9 @@ private fun addForecastToCalendar(forecastList: List<ForecastData>?) {
                     Log.d("MainActivity", "**************")
                     fetchFiveDayForecast(query)
                     //Line Graph
+                    // Hide the keyboard
+                    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(searchView.windowToken, 0)
                 }
                 return true
             }
@@ -698,7 +707,7 @@ private fun setupCalendarButton() {
                 val responseBody = response.body()
                 if(response.isSuccessful && responseBody != null)
                 {
-                    val temperature = responseBody.main.temp.toString()
+                    val temperature = responseBody.main.temp.toInt().toString()
                     val humidity = responseBody.main.humidity
                     val windSpeed = responseBody.wind.speed
                     val sunRise = responseBody.sys.sunrise
@@ -707,14 +716,14 @@ private fun setupCalendarButton() {
                     val sunRiseTime = convertUnixTimeToTimeString(sunRise.toLong())
                     val sunSetTime = convertUnixTimeToTimeString(sunSet.toLong())
                     val seaLevel = responseBody.main.pressure
-                   // val maxTemp = responseBody.main.temp_max
-                   // val minTemp = responseBody.main.temp_min
+                    val maxTemp = responseBody.main.temp_max.toInt()
+                    val minTemp = responseBody.main.temp_min.toInt()
                     val condition = responseBody.weather.firstOrNull()?.main?:"unknown"
                    // Log.d("TAG", "onResponse: $temperature") //temp is temperature
-                    binding.temp.text = "$temperature"
+                    binding.temp.text = "$temperature°C"
                     binding.weather.text = condition
-                    //binding.maxTemp.text = "Max Temp: $maxTemp"
-                   // binding.minTemp.text = "Min Temp: $minTemp"
+                    binding.maxTemp.text = "Max Temp: $maxTemp"
+                    binding.minTemp.text = "Min Temp: $minTemp"
                     binding.humidity.text = "Humidity: $humidity %"
                     binding.wind.text = "Max Temp: $windSpeed"
                     binding.sunrise.text = "$sunRiseTime"
@@ -736,16 +745,13 @@ private fun setupCalendarButton() {
                         // Adding weather information to the calendar
                         Log.d("MainActivity", "ADD TO CALENDAR CALLED")
                        // addWeatherToCalendar(this@MainActivity, weatherInfo, eventDate)
-                    // Call setupLineChart with the weather data
-
 
                     //setupLineChart(responseBody)
 
-
-                    changeAppAccordingToWeatherCondition(condition)
+                    changeAppAccordingToWeatherCondition(condition, temperature)
                 }
             }
-            private fun changeAppAccordingToWeatherCondition(conditions:String){
+            private fun changeAppAccordingToWeatherCondition(conditions:String, temp:String){
                 when(conditions){
                     "Heavy Rain", "Drizzle", "Moderate", "Shower","Light Rain" ->{
                         binding.root.setBackgroundResource(R.drawable.rain_background)

@@ -60,7 +60,7 @@ class MinMaxTempActivity : AppCompatActivity() {
             val averageHumidity = dailyForecasts.map { it.main.humidity }.average().toInt()
             // Add the processed data to the list
            // minMaxTempList.add(MinMaxTempData(date, maxTemp.toFloat(), minTemp.toFloat()),averageHumidity)
-            minMaxTempList.add(MinMaxTempData(date, maxTemp.toFloat(), minTemp.toFloat(), averageHumidity))
+            minMaxTempList.add(MinMaxTempData(date, maxTemp.toInt(), minTemp.toInt(), averageHumidity))
 
         }
 
